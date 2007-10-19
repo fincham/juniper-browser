@@ -1,0 +1,5 @@
+ * juniper_fs_open() needs to verify that we're not opening a file outside ~/.juniper/
+ * we should #include a more specific header than "gtk/gtk.h" when all we need is gchar or something
+ * <select> tags
+ * file uploads
+ * http auth
