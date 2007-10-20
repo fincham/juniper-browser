@@ -5,7 +5,7 @@ set -x
 COMMON="-march=native -O2 -maccumulate-outgoing-args -s -pipe -Wall -Werror -pedantic -fPIC"
 #COMMON="-march=native -ggdb -maccumulate-outgoing-args -pipe -Wall -Werror -pedantic -fPIC"
 
-DEPENDENCIES="libglade-2.0 gtk+-2.0 gtksourceview-1.0 WebKitGdk"
+DEPENDENCIES="libglade-2.0 gtk+-2.0 gtksourceview-1.0 WebKitGtk"
 
 CFLAGS="$COMMON $(pkg-config --cflags $DEPENDENCIES)"
 LDFLAGS="$COMMON -Wl,--as-needed -Wl,--no-add-needed -Wl,--sort-common -Wl,-E -Wl,--gc-sections -Wl,--fatal-warnings -Wl,--relax -Wl,--enable-new-dtags"

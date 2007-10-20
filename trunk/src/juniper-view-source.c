@@ -14,7 +14,7 @@ void juniper_view_source_current_tab()
     GtkSourceLanguagesManager *languages_manager;
     GtkSourceBuffer *source_buffer;
     GtkSourceView *source_view;
-    WebKitGtkPage *page;
+    WebKitPage *page;
     
     page = juniper_tabs_page_for_tab(juniper_tabs_current());
 

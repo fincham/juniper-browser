@@ -58,7 +58,7 @@ GtkEntry * juniper_tabs_address_bar_for_tab(GtkVBox * tab)
     return GTK_ENTRY(address_bar);
 }
 
-WebKitGtkPage * juniper_tabs_page_for_tab(GtkVBox * tab)
+WebKitPage * juniper_tabs_page_for_tab(GtkVBox * tab)
 {
     GtkWidget * scrolled_window, * page;
 
@@ -68,7 +68,7 @@ WebKitGtkPage * juniper_tabs_page_for_tab(GtkVBox * tab)
     page = gtk_bin_get_child(GTK_BIN(scrolled_window));
     assert(page != NULL);
 
-    return WEBKIT_GTK_PAGE(page);
+    return WEBKIT_PAGE(page);
 }
 
 void juniper_tabs_close_current()
@@ -101,17 +101,17 @@ void juniper_tabs_next()
 void juniper_tabs_add_with_location(gchar *location)
 {
     GtkEntry * address_bar;
-    WebKitGtkPage * page;
+    WebKitPage * page;
     GtkVBox * vbox;
     GtkScrolledWindow * scrolled_window;
     GtkLabel * label;
-    WebKitGtkPageClass * page_class;
+    WebKitPageClass * page_class;
 
     /* build the viewport struct */
     address_bar = GTK_ENTRY(gtk_entry_new());
-    page = WEBKIT_GTK_PAGE(webkit_gtk_page_new());
+    page = WEBKIT_PAGE(webkit_page_new());
 
-    page_class = WEBKIT_GTK_PAGE_GET_CLASS(page);
+    page_class = WEBKIT_PAGE_GET_CLASS(page);
     page_class->java_script_alert = juniper_events_javascript_alert;
     page_class->choose_file       = juniper_events_choose_file;
 
@@ -138,7 +138,7 @@ void juniper_tabs_add_with_location(gchar *location)
 
     if (location) {
         gtk_label_set_text(label, "loading...");
-        webkit_gtk_page_open(page, location);
+        webkit_page_open(page, location);
     }
     else
     {
