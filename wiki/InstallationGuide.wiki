@@ -34,8 +34,10 @@ WebKit/WebKitTools/Scripts/update-webkit
 
 = Juniper =
 
-Once you have !WebKit libraries and headers installed, building Juniper is simple. Just run our build script from within the checked out source directory:
+Once you have !WebKit libraries and headers installed, building Juniper is simple. Just check out the source and then run our build script from within the checked out source directory:
 
 {{{
+svn checkout http://juniper-browser.googlecode.com/svn/trunk/ juniper
+cd juniper
 ./build.sh
 }}}
