@@ -15,7 +15,7 @@
  */
 void juniper_events_address_bar_activate(GtkEntry * address_bar)
 {
-    WebKitGtkPage * page;
+    WebKitPage * page;
     const gchar * url;
 
     url = gtk_entry_get_text(address_bar);
@@ -26,14 +26,14 @@ void juniper_events_address_bar_activate(GtkEntry * address_bar)
     page = juniper_tabs_page_for_tab(juniper_tabs_current());
     assert(page != NULL);
 
-    webkit_gtk_page_open(page, url);
+    webkit_page_open(page, url);
 }
 
 /**
  * This can't use current_tab, because the page could be loading on a tab that
  * isn't the current one.
  */
-void juniper_events_page_title_changed(WebKitGtkPage * page, const gchar * page_title, const gchar * url, GtkVBox * tab)
+void juniper_events_page_title_changed(WebKitPage * page, const gchar * page_title, const gchar * url, GtkVBox * tab)
 {
     GtkLabel * label;
 
@@ -52,12 +52,12 @@ void juniper_events_about_activate(GtkMenuItem * menu_item)
     gtk_widget_hide(GTK_WIDGET(dialog));
 }
 
-void juniper_events_javascript_alert(WebKitGtkPage * page, WebKitGtkFrame * frame, const gchar * alert_message)
+void juniper_events_javascript_alert(WebKitPage * page, WebKitFrame * frame, const gchar * alert_message)
 {
     juniper_ui_show_message_box(GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "Javascript Alert", alert_message);
 }
 
-gchar * juniper_events_choose_file(WebKitGtkPage * page, WebKitGtkFrame * frame, const gchar * old_file)
+gchar * juniper_events_choose_file(WebKitPage * page, WebKitFrame * frame, const gchar * old_file)
 {
     GtkWidget * dialog;
     gchar * filename = NULL;
@@ -103,12 +103,12 @@ gboolean juniper_events_tab_bar_key_press(GtkWidget * widget, GdkEventKey * even
 }
 
 /**
- * This is for keypresses that apply to a particular WebKitGtkPage, and as such
+ * This is for keypresses that apply to a particular WebKitPage, and as such
  * require a reference to the tab itself.
  */
 gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, GtkVBox * tab)
 {
-    WebKitGtkPage * page;
+    WebKitPage * page;
 
     page = juniper_tabs_page_for_tab(tab);
 
@@ -117,10 +117,10 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         if (event->keyval == GDK_Left)
         {
             /* <Alt><Left> goes back */
-            if (webkit_gtk_page_can_go_backward(page))
+            if (webkit_page_can_go_backward(page))
             {
                 juniper_ui_status_bar_clear();
-                webkit_gtk_page_go_backward(page);
+                webkit_page_go_backward(page);
             }
             else
             {
@@ -132,10 +132,10 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         else if (event->keyval == GDK_Right)
         {
             /* <Alt><Right> goes forward */
-            if (webkit_gtk_page_can_go_forward(page))
+            if (webkit_page_can_go_forward(page))
             {
                 juniper_ui_status_bar_clear();
-                webkit_gtk_page_go_forward(page);
+                webkit_page_go_forward(page);
             }
             else
             {
@@ -147,7 +147,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         else if (event->keyval == GDK_Home)
         {
             /* <Alt><Home> goes to the homepage */
-            webkit_gtk_page_open(page, juniper_prefs_get_homepage());
+            webkit_page_open(page, juniper_prefs_get_homepage());
             return TRUE;
         }
     }
@@ -156,7 +156,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         if (event->keyval == GDK_r)
         {
             /* <Ctrl>R reloads the page */
-            webkit_gtk_page_reload(page);
+            webkit_page_reload(page);
             return TRUE;
         }
     }
@@ -165,13 +165,13 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         if (event->keyval == GDK_Escape)
         {
             /* <Esc> stops loading the page */
-            webkit_gtk_page_stop_loading(page);
+            webkit_page_stop_loading(page);
             return TRUE;
         }
         else if (event->keyval == GDK_F5)
         {
             /* <F5> reloads the page */
-            webkit_gtk_page_reload(page);
+            webkit_page_reload(page);
             return TRUE;
         }
     }
@@ -179,7 +179,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
     return FALSE;
 }
 
-void juniper_events_page_link_hover(WebKitGtkPage * page, const gchar * url, const gchar * foo)
+void juniper_events_page_link_hover(WebKitPage * page, const gchar * url, const gchar * foo)
 {
     juniper_ui_status_bar_update(url);
 }
