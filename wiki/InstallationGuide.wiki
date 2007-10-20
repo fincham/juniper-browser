@@ -1,0 +1,41 @@
+#summary How to install Juniper
+
+= WebKit =
+
+You'll need to install the WebKit/GTK library first. This is pretty straightforward.
+
+Download the latest six-hourly snapshot of the WebKit SVN repository (this is much faster than checking it out via SVN as the repository is huge) and extract it:
+
+{{{
+wget http://live.nightly.webkit.org/files/WebKit-SVN-source.tar.bz2
+tar xjf WebKit-SVN-source.tar.bz2
+}}}
+
+Enter the created directory and build the WebKit source (this will take a little while depending on your system specs):
+
+{{{
+cd WebKit
+WebKit/WebKitTools/Scripts/build-webkit --gtk
+}}}
+
+As root, copy the created libraries and headers to their destination locations:
+
+{{{
+cp WebKitBuild/Release/lib/* /usr/lib/
+mkdir -p /usr/include/WebKitGtk
+cp WebKit/gtk/Api/*.h /usr/include/WebKitGtk/
+}}}
+
+If you later want to update the repository before building again, run:
+
+{{{
+WebKit/WebKitTools/Scripts/update-webkit
+}}}
+
+= Juniper =
+
+Once you have WebKit libraries and headers installed, building Juniper is simple. Just run our build script from within the checked out source directory:
+
+{{{
+./build.sh
+}}}
