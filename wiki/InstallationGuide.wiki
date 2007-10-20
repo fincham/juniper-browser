@@ -1,5 +1,14 @@
 #summary How to install Juniper
 
+= Dependencies =
+
+The main dependency is !WebKit/GTK. Installation instructions for this are provided below.
+
+We also depend on the following packages, most of which should be available in your distribution repositories:
+  * libglade-2.0
+  * gtk+-2.0
+  * gtksourceview-1.0 (not used yet)
+
 = !WebKit =
 
 You'll need to install the !WebKit/GTK library first. This is pretty straightforward.
