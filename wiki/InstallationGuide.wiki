@@ -24,7 +24,7 @@ Enter the created directory and build the !WebKit source (this will take a littl
 
 {{{
 cd WebKit
-WebKit/WebKitTools/Scripts/build-webkit --gtk
+WebKitTools/Scripts/build-webkit --gtk
 }}}
 
 As root, copy the created libraries and headers to their destination locations:
