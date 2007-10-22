@@ -179,7 +179,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
     return FALSE;
 }
 
-void juniper_events_page_link_hover(WebKitPage * page, const gchar * url, const gchar * foo)
+void juniper_events_page_link_hover(WebKitPage * page, const gchar * title, const gchar * url)
 {
     juniper_ui_status_bar_update(url);
 }
