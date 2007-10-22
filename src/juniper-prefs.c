@@ -14,7 +14,9 @@
 #define PREF_HOMEPAGE_KEY                 "homepage"
 #define PREF_OPEN_HOMEPAGE_ON_NEW_TAB_KEY "open_homepage_on_new_tab"
 
-static gchar homepage[1024];
+#define PREF_HOMEPAGE_MAX_LEN 1024
+
+static gchar * homepage = NULL;
 static gboolean open_homepage_on_new_tab;
 
 void juniper_prefs_init()
@@ -25,10 +27,11 @@ void juniper_prefs_init()
     yaml_event_t event;
     int current_mapping_key = 0;
 
-    prefs_file = juniper_fs_open(PREFS_FILE, "r");
+    prefs_file = juniper_fs_open(PREFS_FILE, "a+");
 
     if (prefs_file == NULL)
     {
+        puts("Error opening preferences file");
         return;
     }
 
@@ -42,6 +45,7 @@ void juniper_prefs_init()
     {
         if (!yaml_parser_parse(&parser, &event))
         {
+            puts("Error parsing preferences file");
             break;
         }
 
@@ -69,6 +73,10 @@ void juniper_prefs_init()
                 }
                 else if (current_mapping_key == PREF_HOMEPAGE)
                 {
+                    size_t homepage_len = strlen(scalar_data);
+                    if (homepage_len > PREF_HOMEPAGE_MAX_LEN)
+                        break;
+                    homepage = malloc(homepage_len);
                     strcpy(homepage, scalar_data);
                     current_mapping_key = 0;
                 }
