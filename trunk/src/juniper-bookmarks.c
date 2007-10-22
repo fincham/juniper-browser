@@ -26,11 +26,11 @@ void juniper_bookmarks_init(GtkMenu * bookmarks_menu)
 
     bookmarks = g_hash_table_new(g_str_hash, g_str_equal);
 
-    bookmarks_file = juniper_fs_open(BOOKMARKS_FILE, "r");
+    bookmarks_file = juniper_fs_open(BOOKMARKS_FILE, "a+");
 
     if (bookmarks_file == NULL)
     {
-        puts("No bookmarks file");
+        puts("Error opening bookmarks file");
         return;
     }
 
