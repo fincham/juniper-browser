@@ -5,9 +5,10 @@
 #include "stdlib.h"
 #include "sys/stat.h"
 
-#define ENV_HOME       "HOME"
-#define JUNIPER_FOLDER ".juniper"
-#define PATH_SEPARATOR "/"
+#define ENV_HOME            "HOME"
+#define JUNIPER_FOLDER      ".juniper"
+#define JUNIPER_FOLDER_MODE 0700
+#define PATH_SEPARATOR      "/"
 
 FILE * juniper_fs_open(const gchar * filename, const gchar * mode) {
     char * home, juniper_folder[FILENAME_MAX], full_filename[FILENAME_MAX];
@@ -16,7 +17,7 @@ FILE * juniper_fs_open(const gchar * filename, const gchar * mode) {
     home = getenv(ENV_HOME);
     snprintf(juniper_folder, FILENAME_MAX, "%s%s%s", home, PATH_SEPARATOR, JUNIPER_FOLDER);
 
-    mkdir_result = mkdir(juniper_folder, 0500);
+    mkdir_result = mkdir(juniper_folder, JUNIPER_FOLDER_MODE);
     if (!(mkdir_result == 0 || errno == EEXIST))
     {
         printf("Failed to create %s", juniper_folder);
