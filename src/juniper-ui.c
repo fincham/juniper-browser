@@ -41,7 +41,9 @@ void juniper_ui_status_bar_clear()
 void juniper_ui_status_bar_update(const gchar *text)
 {
     juniper_ui_status_bar_clear();
-    gtk_statusbar_push(status_bar, status_bar_context_id, text);
+
+    if (text != NULL)
+        gtk_statusbar_push(status_bar, status_bar_context_id, text);
 }
 
 GtkDialog * juniper_ui_get_about_dialog()
