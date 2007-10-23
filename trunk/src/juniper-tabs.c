@@ -2,9 +2,15 @@
 
 #include "assert.h"
 #include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "uriparser/Uri.h"
 
 #include "juniper-events.h"
 #include "juniper-prefs.h"
+
+#define MAX_URL_LENGTH 1024
+#define MAX_TAB_COUNT  100
 
 static GtkNotebook * tabs;
 
@@ -16,6 +22,11 @@ void juniper_tabs_init(GtkNotebook * i_tabs)
 GtkNotebook * juniper_tabs()
 {
     return tabs;
+}
+
+gint juniper_tabs_count()
+{
+    return gtk_notebook_get_n_pages(tabs);
 }
 
 GtkVBox * juniper_tabs_current()
@@ -98,7 +109,29 @@ void juniper_tabs_next()
     }
 }
 
-void juniper_tabs_add_with_location(gchar *location)
+void juniper_tabs_navigate_to(GtkVBox * tab, const gchar * location)
+{
+    gtk_label_set_text(GTK_LABEL(gtk_notebook_get_tab_label(tabs, GTK_WIDGET(tab))), "loading...");
+
+    if (strstr(location, "://") == NULL)
+    {
+        gchar * canonical_url;
+
+        if (strlen(location) + 7 > MAX_URL_LENGTH)
+            return;
+        
+        canonical_url = malloc(strlen(location)+7);
+        sprintf(canonical_url, "%s%s", "http://", location);
+        gtk_entry_set_text(juniper_tabs_address_bar_for_tab(tab), canonical_url);
+        webkit_page_open(juniper_tabs_page_for_tab(tab), location);
+    }
+    else
+    {
+        webkit_page_open(juniper_tabs_page_for_tab(tab), location);
+    }
+}
+
+void juniper_tabs_add_with_location(gchar * location)
 {
     GtkEntry * address_bar;
     WebKitPage * page;
@@ -106,6 +139,9 @@ void juniper_tabs_add_with_location(gchar *location)
     GtkScrolledWindow * scrolled_window;
     GtkLabel * label;
     WebKitPageClass * page_class;
+
+    if (juniper_tabs_count() + 1 > MAX_TAB_COUNT)
+        return;
 
     /* build the viewport struct */
     address_bar = GTK_ENTRY(gtk_entry_new());
@@ -136,9 +172,9 @@ void juniper_tabs_add_with_location(gchar *location)
     g_signal_connect(address_bar, "activate", G_CALLBACK(juniper_events_address_bar_activate), NULL);
     g_signal_connect(address_bar, "key-press-event", G_CALLBACK(juniper_events_tab_key_press), vbox);
 
-    if (location) {
-        gtk_label_set_text(label, "loading...");
-        webkit_page_open(page, location);
+    if (location)
+    {
+        juniper_tabs_navigate_to(vbox, location);
     }
     else
     {
