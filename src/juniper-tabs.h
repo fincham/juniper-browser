@@ -2,7 +2,7 @@
 #define JUNIPER_TABS
 
 #include "gtk/gtk.h"
-#include "WebKitGtk/webkitgtkpage.h"
+#include "webkit/webkitwebview.h"
 
 void juniper_tabs_init(GtkNotebook *);
 void juniper_tabs_cleanup();
@@ -10,7 +10,7 @@ void juniper_tabs_cleanup();
 GtkNotebook * juniper_tabs();
 GtkVBox * juniper_tabs_current();
 GtkEntry * juniper_tabs_address_bar_for_tab(GtkVBox *);
-WebKitPage * juniper_tabs_page_for_tab(GtkVBox *);
+WebKitWebView * juniper_tabs_page_for_tab(GtkVBox *);
 
 void juniper_tabs_close_current();
 void juniper_tabs_add();

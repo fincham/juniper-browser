@@ -2,108 +2,61 @@
 
 #include "assert.h"
 #include "string.h"
-#include "yaml.h"
+#include "libxml/parser.h"
+#include "libxml/tree.h"
 
 #include "juniper-fs.h"
 
-#define PREFS_FILE "preferences"
-
-#define PREF_HOMEPAGE                 1
-#define PREF_OPEN_HOMEPAGE_ON_NEW_TAB 2
+#define PREFS_FILE "preferences.xml"
 
 #define PREF_HOMEPAGE_KEY                 "homepage"
 #define PREF_OPEN_HOMEPAGE_ON_NEW_TAB_KEY "open_homepage_on_new_tab"
 
 #define PREF_HOMEPAGE_MAX_LEN 1024
 
-static gchar * homepage = NULL;
-static gboolean open_homepage_on_new_tab;
+static GHashTable * prefs_table = NULL;
 
-void juniper_prefs_init()
+gboolean juniper_prefs_init()
 {
-    char * scalar_data;
-    FILE * prefs_file;
-    yaml_parser_t parser;
-    yaml_event_t event;
-    int current_mapping_key = 0;
+    xmlDoc * doc = NULL;
+    xmlNode * root_element = NULL;
+    xmlNode * prefs_element = NULL;
 
-    prefs_file = juniper_fs_open(PREFS_FILE, "a+");
+    LIBXML_TEST_VERSION
 
-    if (prefs_file == NULL)
+    doc = xmlReadFile(juniper_fs_build_filename(PREFS_FILE), NULL, 0);
+
+    if (doc == NULL)
     {
-        puts("Error opening preferences file");
-        return;
+        puts("Error reading preferences file");
+        return FALSE;
     }
 
-    memset(&parser, 0, sizeof(parser));
-    memset(&event, 0, sizeof(event));
+    root_element = xmlDocGetRootElement(doc);
 
-    assert(yaml_parser_initialize(&parser));
-    yaml_parser_set_input_file(&parser, prefs_file);
-    
-    while (1)
+    prefs_table = g_hash_table_new(g_str_hash, g_str_equal);
+
+    for (prefs_element = root_element->children; prefs_element; prefs_element = prefs_element->next)
     {
-        if (!yaml_parser_parse(&parser, &event))
+        if (prefs_element->type == XML_ELEMENT_NODE)
         {
-            puts("Error parsing preferences file");
-            break;
-        }
-
-        if (event.type == YAML_STREAM_END_EVENT)
-        {
-            break;
-        }
-
-        switch (event.type)
-        {
-            case YAML_SCALAR_EVENT:
-
-                scalar_data = (char *) event.data.scalar.value;
-
-                if (current_mapping_key == 0)
-                {
-                    if (strcmp(scalar_data, PREF_HOMEPAGE_KEY) == 0)
-                    {
-                        current_mapping_key = PREF_HOMEPAGE;
-                    }
-                    else if (strcmp(scalar_data, PREF_OPEN_HOMEPAGE_ON_NEW_TAB_KEY) == 0)
-                    {
-                        current_mapping_key = PREF_OPEN_HOMEPAGE_ON_NEW_TAB;
-                    }
-                }
-                else if (current_mapping_key == PREF_HOMEPAGE)
-                {
-                    size_t homepage_len = strlen(scalar_data);
-                    if (homepage_len > PREF_HOMEPAGE_MAX_LEN)
-                        break;
-                    homepage = malloc(homepage_len);
-                    strcpy(homepage, scalar_data);
-                    current_mapping_key = 0;
-                }
-                else if (current_mapping_key == PREF_OPEN_HOMEPAGE_ON_NEW_TAB)
-                {
-                    open_homepage_on_new_tab = (strcasecmp(scalar_data, "true") == 0);
-                    current_mapping_key = 0;
-                }
-
-                break;
-
-            default:
-                ;
+            g_hash_table_insert(prefs_table, (gchar *) prefs_element->name, prefs_element->content);
         }
     }
 
-    yaml_event_delete(&event);
-    yaml_parser_delete(&parser);
-    fclose(prefs_file);
+    xmlFreeDoc(doc);
+    xmlCleanupParser();
+
+    return TRUE;
 }
 
 gchar * juniper_prefs_get_homepage()
 {
-    return homepage;
+    return g_hash_table_lookup(prefs_table, PREF_HOMEPAGE_KEY);
 }
 
 gboolean juniper_prefs_get_open_homepage_on_new_tab()
 {
-    return open_homepage_on_new_tab;
+    g_hash_table_lookup(prefs_table, PREF_OPEN_HOMEPAGE_ON_NEW_TAB_KEY);
+    return FALSE; // TODO
 }

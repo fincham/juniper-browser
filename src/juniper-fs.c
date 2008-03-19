@@ -10,7 +10,8 @@
 #define JUNIPER_FOLDER_MODE 0700
 #define PATH_SEPARATOR      "/"
 
-FILE * juniper_fs_open(const gchar * filename, const gchar * mode) {
+gchar * juniper_fs_build_filename(const gchar * filename)
+{
     char * home, juniper_folder[FILENAME_MAX], full_filename[FILENAME_MAX];
     int mkdir_result;
 
@@ -26,5 +27,5 @@ FILE * juniper_fs_open(const gchar * filename, const gchar * mode) {
 
     snprintf(full_filename, FILENAME_MAX, "%s%s%s", juniper_folder, PATH_SEPARATOR, filename);
 
-    return fopen(full_filename, mode);
+    return full_filename;
 }

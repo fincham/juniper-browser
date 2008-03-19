@@ -2,8 +2,7 @@
 #define JUNIPER_FS
 
 #include "gtk/gtk.h"
-#include "stdio.h"
 
-FILE * juniper_fs_open(const gchar * filename, const gchar * mode);
+gchar * juniper_fs_build_filename(const gchar * filename);
 
 #endif
