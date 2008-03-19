@@ -18,14 +18,17 @@ GtkWindow * juniper_ui_get_window()
     return window;
 }
 
-void juniper_ui_show_message_box(GtkMessageType type, GtkButtonsType buttons, const gchar *title, const gchar *message)
+gboolean juniper_ui_show_message_box(GtkMessageType type, GtkButtonsType buttons, const gchar *title, const gchar *message)
 {
     GtkMessageDialog *message_dialog;
+    gboolean result;
 
     message_dialog = GTK_MESSAGE_DIALOG(gtk_message_dialog_new(window, GTK_DIALOG_MODAL, type, buttons, title));
     gtk_message_dialog_format_secondary_text(message_dialog, "%s", message);
-    gtk_dialog_run(GTK_DIALOG(message_dialog));
+    result = gtk_dialog_run(GTK_DIALOG(message_dialog));
     gtk_widget_destroy(GTK_WIDGET(message_dialog));
+
+    return result;
 }
 
 GtkStatusbar * juniper_ui_status_bar()

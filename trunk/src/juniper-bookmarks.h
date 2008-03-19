@@ -3,7 +3,7 @@
 
 #include "gtk/gtk.h"
 
-void juniper_bookmarks_init(GtkMenu * bookmarks_menu);
+gboolean juniper_bookmarks_init(GtkMenu * bookmarks_menu);
 gchar * juniper_bookmarks_get(gchar * title);
 void juniper_bookmarks_add(gchar * title, gchar * url);
 

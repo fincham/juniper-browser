@@ -69,7 +69,7 @@ GtkEntry * juniper_tabs_address_bar_for_tab(GtkVBox * tab)
     return GTK_ENTRY(address_bar);
 }
 
-WebKitPage * juniper_tabs_page_for_tab(GtkVBox * tab)
+WebKitWebView * juniper_tabs_page_for_tab(GtkVBox * tab)
 {
     GtkWidget * scrolled_window, * page;
 
@@ -79,7 +79,7 @@ WebKitPage * juniper_tabs_page_for_tab(GtkVBox * tab)
     page = gtk_bin_get_child(GTK_BIN(scrolled_window));
     assert(page != NULL);
 
-    return WEBKIT_PAGE(page);
+    return WEBKIT_WEB_VIEW(page);
 }
 
 void juniper_tabs_close_current()
@@ -123,33 +123,33 @@ void juniper_tabs_navigate_to(GtkVBox * tab, const gchar * location)
         canonical_url = malloc(strlen(location)+7);
         sprintf(canonical_url, "%s%s", "http://", location);
         gtk_entry_set_text(juniper_tabs_address_bar_for_tab(tab), canonical_url);
-        webkit_page_open(juniper_tabs_page_for_tab(tab), location);
+        webkit_web_view_open(juniper_tabs_page_for_tab(tab), location);
     }
     else
     {
-        webkit_page_open(juniper_tabs_page_for_tab(tab), location);
+        webkit_web_view_open(juniper_tabs_page_for_tab(tab), location);
     }
 }
 
 void juniper_tabs_add_with_location(gchar * location)
 {
     GtkEntry * address_bar;
-    WebKitPage * page;
+    WebKitWebView * page;
     GtkVBox * vbox;
     GtkScrolledWindow * scrolled_window;
     GtkLabel * label;
-    WebKitPageClass * page_class;
+    WebKitWebViewClass * page_class;
 
     if (juniper_tabs_count() + 1 > MAX_TAB_COUNT)
         return;
 
     /* build the viewport struct */
     address_bar = GTK_ENTRY(gtk_entry_new());
-    page = WEBKIT_PAGE(webkit_page_new());
+    page = WEBKIT_WEB_VIEW(webkit_web_view_new());
 
-    page_class = WEBKIT_PAGE_GET_CLASS(page);
-    page_class->java_script_alert = juniper_events_javascript_alert;
-    page_class->choose_file       = juniper_events_choose_file;
+    page_class = WEBKIT_WEB_VIEW_GET_CLASS(page);
+    page_class->script_alert = juniper_events_script_alert;
+    page_class->choose_file  = juniper_events_choose_file;
 
     /* lay out the tab UI */
     scrolled_window = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
@@ -166,6 +166,7 @@ void juniper_tabs_add_with_location(gchar * location)
     gtk_notebook_set_current_page(tabs, gtk_notebook_append_page(tabs, GTK_WIDGET(vbox), GTK_WIDGET(label)));
 
     /* connect signal handlers */
+    g_signal_connect(page, "load-committed", G_CALLBACK(juniper_events_page_load_started), vbox);
     g_signal_connect(page, "title-changed", G_CALLBACK(juniper_events_page_title_changed), vbox);
     g_signal_connect(page, "hovering-over-link", G_CALLBACK(juniper_events_page_link_hover), NULL);
     g_signal_connect(page, "key-press-event", G_CALLBACK(juniper_events_tab_key_press), vbox);

@@ -15,7 +15,7 @@
  */
 void juniper_events_address_bar_activate(GtkEntry * address_bar)
 {
-    WebKitPage * page;
+    WebKitWebView * page;
     const gchar * url;
 
     url = gtk_entry_get_text(address_bar);
@@ -26,21 +26,38 @@ void juniper_events_address_bar_activate(GtkEntry * address_bar)
     page = juniper_tabs_page_for_tab(juniper_tabs_current());
     assert(page != NULL);
 
-    webkit_page_open(page, url);
+    webkit_web_view_open(page, url);
 }
 
 /**
  * This can't use current_tab, because the page could be loading on a tab that
  * isn't the current one.
  */
-void juniper_events_page_title_changed(WebKitPage * page, const gchar * page_title, const gchar * url, GtkVBox * tab)
+void juniper_events_page_title_changed(WebKitWebView * page, WebKitWebFrame * frame, const gchar * page_title, GtkVBox * tab)
 {
     GtkLabel * label;
 
-    gtk_entry_set_text(juniper_tabs_address_bar_for_tab(tab), url);
+#ifdef DEBUG
+    printf("new title: %s\n", page_title);
+#endif
 
     label = GTK_LABEL(gtk_notebook_get_tab_label(juniper_tabs(), GTK_WIDGET(tab)));
     gtk_label_set_text(label, page_title);
+}
+
+void juniper_events_page_load_started(WebKitWebView * page, WebKitWebFrame * frame, GtkVBox * tab)
+{
+    GtkEntry * address_bar;
+    gchar * uri;
+
+    address_bar = juniper_tabs_address_bar_for_tab(tab);
+    uri = webkit_web_frame_get_uri(frame);
+
+#ifdef DEBUG
+    printf("page load started, uri: %s\n", uri);
+#endif
+
+    gtk_entry_set_text(address_bar, uri);
 }
 
 void juniper_events_about_activate(GtkMenuItem * menu_item)
@@ -52,12 +69,12 @@ void juniper_events_about_activate(GtkMenuItem * menu_item)
     gtk_widget_hide(GTK_WIDGET(dialog));
 }
 
-void juniper_events_javascript_alert(WebKitPage * page, WebKitFrame * frame, const gchar * alert_message)
+gboolean juniper_events_script_alert(WebKitWebView * page, WebKitWebFrame * frame, const gchar * alert_message)
 {
-    juniper_ui_show_message_box(GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "Javascript Alert", alert_message);
+    return juniper_ui_show_message_box(GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "Javascript Alert", alert_message);
 }
 
-gchar * juniper_events_choose_file(WebKitPage * page, WebKitFrame * frame, const gchar * old_file)
+gchar * juniper_events_choose_file(WebKitWebView * page, WebKitWebFrame * frame, const gchar * old_file)
 {
     GtkWidget * dialog;
     gchar * filename = NULL;
@@ -108,7 +125,7 @@ gboolean juniper_events_tab_bar_key_press(GtkWidget * widget, GdkEventKey * even
  */
 gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, GtkVBox * tab)
 {
-    WebKitPage * page;
+    WebKitWebView * page;
 
     page = juniper_tabs_page_for_tab(tab);
 
@@ -117,10 +134,10 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         if (event->keyval == GDK_Left)
         {
             /* <Alt><Left> goes back */
-            if (webkit_page_can_go_backward(page))
+            if (webkit_web_view_can_go_back(page))
             {
                 juniper_ui_status_bar_clear();
-                webkit_page_go_backward(page);
+                webkit_web_view_go_back(page);
             }
             else
             {
@@ -132,10 +149,10 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         else if (event->keyval == GDK_Right)
         {
             /* <Alt><Right> goes forward */
-            if (webkit_page_can_go_forward(page))
+            if (webkit_web_view_can_go_forward(page))
             {
                 juniper_ui_status_bar_clear();
-                webkit_page_go_forward(page);
+                webkit_web_view_go_forward(page);
             }
             else
             {
@@ -147,7 +164,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         else if (event->keyval == GDK_Home)
         {
             /* <Alt><Home> goes to the homepage */
-            webkit_page_open(page, juniper_prefs_get_homepage());
+            webkit_web_view_open(page, juniper_prefs_get_homepage());
             return TRUE;
         }
     }
@@ -156,7 +173,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         if (event->keyval == GDK_r)
         {
             /* <Ctrl>R reloads the page */
-            webkit_page_reload(page);
+            webkit_web_view_reload(page);
             return TRUE;
         }
     }
@@ -165,13 +182,13 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         if (event->keyval == GDK_Escape)
         {
             /* <Esc> stops loading the page */
-            webkit_page_stop_loading(page);
+            webkit_web_view_stop_loading(page);
             return TRUE;
         }
         else if (event->keyval == GDK_F5)
         {
             /* <F5> reloads the page */
-            webkit_page_reload(page);
+            webkit_web_view_reload(page);
             return TRUE;
         }
     }
@@ -179,7 +196,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
     return FALSE;
 }
 
-void juniper_events_page_link_hover(WebKitPage * page, const gchar * title, const gchar * url)
+void juniper_events_page_link_hover(WebKitWebView * page, const gchar * title, const gchar * url)
 {
     juniper_ui_status_bar_update(url);
 }

@@ -3,7 +3,7 @@
 #include "gtk/gtk.h"
 #include "gtksourceview/gtksourceview.h"
 #include "gtksourceview/gtksourcelanguagesmanager.h"
-#include "WebKitGtk/webkitgtkpage.h"
+#include "webkit/webkitwebview.h"
 
 #include "juniper-tabs.h"
 
@@ -14,7 +14,7 @@ void juniper_view_source_current_tab()
     GtkSourceLanguagesManager *languages_manager;
     GtkSourceBuffer *source_buffer;
     GtkSourceView *source_view;
-    WebKitPage *page;
+    WebKitWebView *page;
     
     page = juniper_tabs_page_for_tab(juniper_tabs_current());
 
@@ -27,7 +27,7 @@ void juniper_view_source_current_tab()
 
     languages_manager = gtk_source_languages_manager_new();
     source_buffer = GTK_SOURCE_BUFFER(gtk_source_buffer_new_with_language(gtk_source_languages_manager_get_language_from_mime_type(languages_manager, "text/html")));
-/*gtk_text_buffer_set_text(GTK_TEXT_BUFFER(source_buffer), webkit_gtk_frame_get_markup(webkit_gtk_page_get_main_frame(page)), -1);*/
+/*gtk_text_buffer_set_text(GTK_TEXT_BUFFER(source_buffer), webkit_gtk_frame_get_markup(webkit_web_view_get_main_frame(page)), -1);*/
 
     source_view = GTK_SOURCE_VIEW(gtk_source_view_new_with_buffer(source_buffer));
 

@@ -30,8 +30,12 @@ int main(int argc, char **argv)
     window = GTK_WINDOW(glade_xml_get_widget(xml, "main_window"));
     tabs = GTK_NOTEBOOK(glade_xml_get_widget(xml, "tabs"));
 
-    juniper_prefs_init();
-    juniper_bookmarks_init(GTK_MENU(glade_xml_get_widget(xml, "bookmarks_menu")));
+    if (!juniper_prefs_init())
+        return 1;
+
+    if (!juniper_bookmarks_init(GTK_MENU(glade_xml_get_widget(xml, "bookmarks_menu"))))
+        return 1;
+
     juniper_ui_init(window, GTK_STATUSBAR(glade_xml_get_widget(xml, "status_bar")), GTK_DIALOG(glade_xml_get_widget(xml, "about_dialog")));
     juniper_tabs_init(tabs);
 

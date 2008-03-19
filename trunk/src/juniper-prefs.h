@@ -3,7 +3,7 @@
 
 #include "gtk/gtk.h"
 
-void juniper_prefs_init();
+gboolean juniper_prefs_init();
 gchar * juniper_prefs_get_homepage();
 gboolean juniper_prefs_get_open_homepage_on_new_tab();
 
