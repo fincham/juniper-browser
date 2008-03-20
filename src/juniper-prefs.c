@@ -50,13 +50,12 @@ gboolean juniper_prefs_init()
     return TRUE;
 }
 
-gchar * juniper_prefs_get_homepage()
+gpointer juniper_prefs_get(const gchar * key)
 {
-    return g_hash_table_lookup(prefs_table, PREF_HOMEPAGE_KEY);
+    return g_hash_table_lookup(prefs_table, key);
 }
 
-gboolean juniper_prefs_get_open_homepage_on_new_tab()
+void juniper_prefs_set(const gchar * key, const gpointer value)
 {
-    g_hash_table_lookup(prefs_table, PREF_OPEN_HOMEPAGE_ON_NEW_TAB_KEY);
-    return FALSE; /* TODO */
+    g_hash_table_insert(prefs_table, g_strdup(key), value);
 }

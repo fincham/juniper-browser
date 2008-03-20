@@ -9,6 +9,7 @@
 #include "juniper-prefs.h"
 #include "juniper-bookmarks.h"
 #include "juniper-ui.h"
+#include "juniper-util.h"
 
 void juniper_quit()
 {
@@ -39,11 +40,11 @@ int main(int argc, char **argv)
     juniper_ui_init(window, GTK_STATUSBAR(glade_xml_get_widget(xml, "status_bar")), GTK_DIALOG(glade_xml_get_widget(xml, "about_dialog")));
     juniper_tabs_init(tabs);
 
-    url = (argc == 2) ? argv[1] : juniper_prefs_get_homepage();
+    url = (argc == 2) ? argv[1] : juniper_prefs_get("homepage");
 
     if (url)
     {
-        juniper_tabs_add_with_location(url);
+        juniper_tabs_add_with_location(juniper_util_normalise_url(url));
     }
     else
     {

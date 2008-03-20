@@ -11,6 +11,8 @@ GtkNotebook * juniper_tabs();
 GtkVBox * juniper_tabs_current();
 GtkVBox * juniper_tabs_nth(guint index);
 
+void juniper_tabs_navigate_to(GtkVBox * tab, const gchar * location);
+
 const gchar * juniper_tabs_get_title(GtkVBox * tab);
 void juniper_tabs_set_title(GtkVBox * tab, const gchar * title);
 
