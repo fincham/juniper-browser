@@ -9,12 +9,17 @@ void juniper_tabs_cleanup();
 
 GtkNotebook * juniper_tabs();
 GtkVBox * juniper_tabs_current();
+GtkVBox * juniper_tabs_nth(guint index);
+
+const gchar * juniper_tabs_get_title(GtkVBox * tab);
+void juniper_tabs_set_title(GtkVBox * tab, const gchar * title);
+
 GtkEntry * juniper_tabs_address_bar_for_tab(GtkVBox *);
 WebKitWebView * juniper_tabs_page_for_tab(GtkVBox *);
 
 void juniper_tabs_close_current();
 void juniper_tabs_add();
-void juniper_tabs_add_with_location(gchar *);
+void juniper_tabs_add_with_location(const gchar *);
 void juniper_tabs_next();
 
 #endif

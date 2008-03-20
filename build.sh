@@ -1,12 +1,13 @@
 #!/bin/sh
 set -e
 
-COMMON="-march=native -O2 -maccumulate-outgoing-args -s -pipe -Wall -pedantic -fPIC $@"
+COMMON="-march=native -O2 -maccumulate-outgoing-args -s -pipe -Wall -pedantic -fPIC -Werror $@"
 
 DEPENDENCIES="libglade-2.0 gtk+-2.0 gtksourceview-1.0 webkit-1.0"
 
 CFLAGS="$COMMON $(pkg-config --cflags $DEPENDENCIES)"
-LDFLAGS="$COMMON -Wl,--as-needed -Wl,--no-add-needed -Wl,--sort-common -Wl,-E -Wl,--gc-sections -Wl,--fatal-warnings -Wl,--relax -Wl,--enable-new-dtags"
+LDFLAGS="$COMMON -Wl,-E"
+# -Wl,--as-needed -Wl,--no-add-needed -Wl,--sort-common -Wl,-E -Wl,--gc-sections -Wl,--fatal-warnings -Wl,--relax -Wl,--enable-new-dtags"
 LIBS="$(pkg-config --libs $DEPENDENCIES)"
 
 echo "CFLAGS: $CFLAGS"
@@ -25,11 +26,12 @@ gcc $CFLAGS -c juniper-tabs.c -o ../juniper-tabs.o
 gcc $CFLAGS -c juniper-events.c -o ../juniper-events.o
 gcc $CFLAGS -c juniper-view-source.c -o ../juniper-view-source.o
 gcc $CFLAGS -c juniper-ui.c -o ../juniper-ui.o
+gcc $CFLAGS -c juniper-util.c -o ../juniper-util.o
 
 cd ..
 
 # Build dynamically-linked Juniper executable
-gcc $LDFLAGS -o juniper juniper.o juniper-tabs.o juniper-events.o juniper-fs.o juniper-prefs.o juniper-bookmarks.o juniper-view-source.o juniper-ui.o $LIBS
+gcc $LDFLAGS -o juniper juniper.o juniper-tabs.o juniper-events.o juniper-fs.o juniper-prefs.o juniper-bookmarks.o juniper-view-source.o juniper-ui.o juniper-util.o $LIBS
 
 rm -f *.o
 

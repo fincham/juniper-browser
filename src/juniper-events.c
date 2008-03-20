@@ -4,10 +4,13 @@
 #include "string.h"
 
 #include "gdk/gdkkeysyms.h"
+#include "webkit/webkitwebframe.h"
+#include "webkit/webkitnavigationaction.h"
 
 #include "juniper-prefs.h"
 #include "juniper-tabs.h"
 #include "juniper-ui.h"
+#include "juniper-util.h"
 
 /*
  * It's OK to use current_tab here, as the user was interacting with the
@@ -35,20 +38,46 @@ void juniper_events_address_bar_activate(GtkEntry * address_bar)
  */
 void juniper_events_page_title_changed(WebKitWebView * page, WebKitWebFrame * frame, const gchar * page_title, GtkVBox * tab)
 {
-    GtkLabel * label;
-
 #ifdef DEBUG
     printf("new title: %s\n", page_title);
 #endif
 
-    label = GTK_LABEL(gtk_notebook_get_tab_label(juniper_tabs(), GTK_WIDGET(tab)));
-    gtk_label_set_text(label, page_title);
+    juniper_tabs_set_title(tab, page_title);
+}
+
+void juniper_events_current_tab_changed(GtkNotebook * tabs, GtkNotebookPage * notebook_page, guint page_num)
+{
+    juniper_ui_set_window_title(juniper_tabs_get_title(juniper_tabs_nth(page_num)));
+}
+
+WebKitNavigationResponse juniper_events_navigation_requested(WebKitWebView * page, WebKitNavigationAction * action, WebKitWebFrame * frame, WebKitNetworkRequest * request, GtkVBox * tab)
+{
+    gint button, modifier_flags;
+    const gchar* url;
+
+    button = webkit_navigation_action_get_button(action);
+    modifier_flags = webkit_navigation_action_get_modifier_flags(action);
+    url = webkit_navigation_action_get_original_url(action);
+
+#ifdef DEBUG
+    printf("navigation requested: button=%i, modifier_flags=%i, url=%s\n", button, modifier_flags, url);
+#endif
+
+    if (button == 1 || (button == 0 && (modifier_flags & GDK_CONTROL_MASK))) /* middle click or ctrl-click */
+    {
+        juniper_tabs_add_with_location(url);
+        return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
+    }
+
+    juniper_ui_status_bar_update(juniper_util_sprintf("Navigating to %s", url));
+
+    return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 }
 
 void juniper_events_page_load_started(WebKitWebView * page, WebKitWebFrame * frame, GtkVBox * tab)
 {
     GtkEntry * address_bar;
-    gchar * uri;
+    const gchar * uri;
 
     address_bar = juniper_tabs_address_bar_for_tab(tab);
     uri = webkit_web_frame_get_uri(frame);

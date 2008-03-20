@@ -13,6 +13,7 @@
 gchar * juniper_fs_build_filename(const gchar * filename)
 {
     char * home, juniper_folder[FILENAME_MAX], full_filename[FILENAME_MAX];
+    gchar * result;
     int mkdir_result;
 
     home = getenv(ENV_HOME);
@@ -27,5 +28,7 @@ gchar * juniper_fs_build_filename(const gchar * filename)
 
     snprintf(full_filename, FILENAME_MAX, "%s%s%s", juniper_folder, PATH_SEPARATOR, filename);
 
-    return full_filename;
+    result = malloc(strlen(full_filename));
+    strcpy(result, full_filename);
+    return result;
 }

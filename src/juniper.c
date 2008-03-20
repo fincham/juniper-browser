@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     gchar * url;
 
     gtk_init(&argc, &argv);
-    xml = glade_xml_new("juniper.glade", NULL, NULL);
+    xml = glade_xml_new("/usr/share/juniper/juniper.glade", NULL, NULL);
     glade_xml_signal_autoconnect(xml);
 
     window = GTK_WINDOW(glade_xml_get_widget(xml, "main_window"));
