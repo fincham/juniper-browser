@@ -8,11 +8,13 @@
 
 #include "juniper-events.h"
 #include "juniper-prefs.h"
+#include "juniper-ui.h"
 
 #define MAX_URL_LENGTH 1024
 #define MAX_TAB_COUNT  100
 
 static GtkNotebook * tabs;
+static gboolean first_tab_added = TRUE;
 
 void juniper_tabs_init(GtkNotebook * i_tabs)
 {
@@ -37,10 +39,33 @@ GtkVBox * juniper_tabs_current()
     page_num = gtk_notebook_get_current_page(tabs);
     assert(page_num > -1);
 
-    tab = GTK_VBOX(gtk_notebook_get_nth_page(tabs, page_num));
+    tab = juniper_tabs_nth(page_num);
     assert(tab != NULL);
 
     return tab;
+}
+
+GtkVBox * juniper_tabs_nth(guint index)
+{
+    return GTK_VBOX(gtk_notebook_get_nth_page(tabs, index));
+}
+
+const gchar * juniper_tabs_get_title(GtkVBox * tab)
+{
+    return gtk_label_get_text(GTK_LABEL(gtk_notebook_get_tab_label(tabs, GTK_WIDGET(tab))));
+}
+
+void juniper_tabs_set_title(GtkVBox * tab, const gchar * title)
+{
+    GtkLabel * label;
+
+    label = GTK_LABEL(gtk_notebook_get_tab_label(tabs, GTK_WIDGET(tab)));
+    gtk_label_set_text(label, title);
+
+    if (tab == juniper_tabs_current())
+    {
+        juniper_ui_set_window_title(title);
+    }
 }
 
 GtkWidget * juniper_tabs_nth_widget_for_tab(GtkVBox * tab, guint index)
@@ -131,7 +156,7 @@ void juniper_tabs_navigate_to(GtkVBox * tab, const gchar * location)
     }
 }
 
-void juniper_tabs_add_with_location(gchar * location)
+void juniper_tabs_add_with_location(const gchar * location)
 {
     GtkEntry * address_bar;
     WebKitWebView * page;
@@ -166,12 +191,19 @@ void juniper_tabs_add_with_location(gchar * location)
     gtk_notebook_set_current_page(tabs, gtk_notebook_append_page(tabs, GTK_WIDGET(vbox), GTK_WIDGET(label)));
 
     /* connect signal handlers */
+    g_signal_connect(page, "navigation-requested", G_CALLBACK(juniper_events_navigation_requested), vbox);
     g_signal_connect(page, "load-committed", G_CALLBACK(juniper_events_page_load_started), vbox);
     g_signal_connect(page, "title-changed", G_CALLBACK(juniper_events_page_title_changed), vbox);
     g_signal_connect(page, "hovering-over-link", G_CALLBACK(juniper_events_page_link_hover), NULL);
     g_signal_connect(page, "key-press-event", G_CALLBACK(juniper_events_tab_key_press), vbox);
     g_signal_connect(address_bar, "activate", G_CALLBACK(juniper_events_address_bar_activate), NULL);
     g_signal_connect(address_bar, "key-press-event", G_CALLBACK(juniper_events_tab_key_press), vbox);
+
+    if (first_tab_added)
+    {
+        g_signal_connect(tabs, "switch-page", G_CALLBACK(juniper_events_current_tab_changed), NULL);
+        first_tab_added = FALSE;
+    }
 
     if (location)
     {

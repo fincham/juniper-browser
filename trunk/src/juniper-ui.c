@@ -1,5 +1,9 @@
 #include "juniper-ui.h"
 
+#include "string.h"
+
+#include "juniper-util.h"
+
 static GtkWindow * window;
 static GtkStatusbar * status_bar;
 static guint status_bar_context_id;
@@ -16,6 +20,18 @@ void juniper_ui_init(GtkWindow * i_window, GtkStatusbar * i_status_bar, GtkDialo
 GtkWindow * juniper_ui_get_window()
 {
     return window;
+}
+
+void juniper_ui_set_window_title(const gchar * title)
+{
+    gchar * new_title;
+
+    if (strlen(title) < 1)
+        new_title = "Juniper";
+    else
+        new_title = juniper_util_sprintf("%s - Juniper", title);
+
+    gtk_window_set_title(window, new_title);
 }
 
 gboolean juniper_ui_show_message_box(GtkMessageType type, GtkButtonsType buttons, const gchar *title, const gchar *message)

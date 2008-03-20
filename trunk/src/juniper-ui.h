@@ -5,6 +5,7 @@
 
 void juniper_ui_init(GtkWindow *, GtkStatusbar *, GtkDialog *);
 GtkWindow * juniper_ui_get_window();
+void juniper_ui_set_window_title(const gchar * title);
 gboolean juniper_ui_show_message_box(GtkMessageType type, GtkButtonsType buttons, const gchar *title, const gchar *message);
 GtkStatusbar * juniper_ui_status_bar();
 void juniper_ui_status_bar_clear();

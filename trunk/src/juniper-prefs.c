@@ -58,5 +58,5 @@ gchar * juniper_prefs_get_homepage()
 gboolean juniper_prefs_get_open_homepage_on_new_tab()
 {
     g_hash_table_lookup(prefs_table, PREF_OPEN_HOMEPAGE_ON_NEW_TAB_KEY);
-    return FALSE; // TODO
+    return FALSE; /* TODO */
 }
