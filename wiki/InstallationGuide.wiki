@@ -4,10 +4,12 @@
 
 The main dependency is !WebKit/GTK. Installation instructions for this are provided below.
 
-We also depend on the following packages, most of which should be available in your distribution repositories:
+We also depend on the following packages, all of which should be available in your distribution repositories. On most Gnome systems, they will already be installed, though you might need to install the -dev variants on binary distributions (like Ubuntu).
+
   * libglade-2.0
   * gtk+-2.0
-  * gtksourceview-1.0 (not used yet)
+  * gtksourceview-1.0
+  * libxml2
 
 = !WebKit =
 
@@ -27,12 +29,12 @@ cd WebKit
 WebKitTools/Scripts/build-webkit --gtk
 }}}
 
-As root, copy the created libraries and headers to their destination locations:
+Install the WebKit libraries and header files:
 
 {{{
-cp WebKitBuild/Release/lib/* /usr/lib/
-mkdir -p /usr/include/WebKitGtk
-cp WebKit/gtk/Api/*.h /usr/include/WebKitGtk/
+cd WebKitBuild/Release
+sudo make install
+cd -
 }}}
 
 If you later want to update the repository before building again, run:
@@ -46,7 +48,21 @@ WebKit/WebKitTools/Scripts/update-webkit
 Once you have !WebKit libraries and headers installed, building Juniper is simple. Just check out the source and then run our build script from within the checked out source directory:
 
 {{{
-svn checkout http://juniper-browser.googlecode.com/svn/trunk/ juniper
+svn co http://juniper-browser.googlecode.com/svn/trunk/ juniper
 cd juniper
 ./build.sh
 }}}
+
+To build with debugging messages enabled on stdout, use:
+
+{{{
+./build.sh -DDEBUG
+}}}
+
+After building, install Juniper with:
+
+{{{
+sudo ./install.sh
+}}}
+
+You can then run 'juniper' to launch the browser.
