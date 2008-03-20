@@ -18,7 +18,6 @@
  */
 void juniper_events_address_bar_activate(GtkEntry * address_bar)
 {
-    WebKitWebView * page;
     const gchar * url;
 
     url = gtk_entry_get_text(address_bar);
@@ -26,10 +25,7 @@ void juniper_events_address_bar_activate(GtkEntry * address_bar)
     if (!url || strlen(url) == 0)
         return;
 
-    page = juniper_tabs_page_for_tab(juniper_tabs_current());
-    assert(page != NULL);
-
-    webkit_web_view_open(page, url);
+    juniper_tabs_navigate_to(juniper_tabs_current(), juniper_util_normalise_url(url));
 }
 
 /**
@@ -53,7 +49,7 @@ void juniper_events_current_tab_changed(GtkNotebook * tabs, GtkNotebookPage * no
 WebKitNavigationResponse juniper_events_navigation_requested(WebKitWebView * page, WebKitNavigationAction * action, WebKitWebFrame * frame, WebKitNetworkRequest * request, GtkVBox * tab)
 {
     gint button, modifier_flags;
-    const gchar* url;
+    const gchar * url;
 
     button = webkit_navigation_action_get_button(action);
     modifier_flags = webkit_navigation_action_get_modifier_flags(action);
@@ -193,7 +189,7 @@ gboolean juniper_events_tab_key_press(GtkWidget * widget, GdkEventKey * event, G
         else if (event->keyval == GDK_Home)
         {
             /* <Alt><Home> goes to the homepage */
-            webkit_web_view_open(page, juniper_prefs_get_homepage());
+            juniper_tabs_navigate_to(tab, juniper_prefs_get("homepage"));
             return TRUE;
         }
     }

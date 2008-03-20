@@ -3,14 +3,11 @@
 #include "assert.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "string.h"
-#include "uriparser/Uri.h"
 
 #include "juniper-events.h"
 #include "juniper-prefs.h"
 #include "juniper-ui.h"
 
-#define MAX_URL_LENGTH 1024
 #define MAX_TAB_COUNT  100
 
 static GtkNotebook * tabs;
@@ -136,24 +133,13 @@ void juniper_tabs_next()
 
 void juniper_tabs_navigate_to(GtkVBox * tab, const gchar * location)
 {
+    assert(tab != NULL);
+
+    if (location == NULL)
+        return;
+
     gtk_label_set_text(GTK_LABEL(gtk_notebook_get_tab_label(tabs, GTK_WIDGET(tab))), "loading...");
-
-    if (strstr(location, "://") == NULL)
-    {
-        gchar * canonical_url;
-
-        if (strlen(location) + 7 > MAX_URL_LENGTH)
-            return;
-        
-        canonical_url = malloc(strlen(location)+7);
-        sprintf(canonical_url, "%s%s", "http://", location);
-        gtk_entry_set_text(juniper_tabs_address_bar_for_tab(tab), canonical_url);
-        webkit_web_view_open(juniper_tabs_page_for_tab(tab), location);
-    }
-    else
-    {
-        webkit_web_view_open(juniper_tabs_page_for_tab(tab), location);
-    }
+    webkit_web_view_open(juniper_tabs_page_for_tab(tab), location);
 }
 
 void juniper_tabs_add_with_location(const gchar * location)
@@ -217,7 +203,7 @@ void juniper_tabs_add_with_location(const gchar * location)
 
 void juniper_tabs_add()
 {
-    juniper_tabs_add_with_location(juniper_prefs_get_open_homepage_on_new_tab() ? juniper_prefs_get_homepage() : NULL);
+    juniper_tabs_add_with_location(juniper_prefs_get("open_homepage_on_new_tab") ? juniper_prefs_get("homepage") : NULL);
 }
 
 void juniper_tabs_cleanup()

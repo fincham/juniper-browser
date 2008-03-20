@@ -4,7 +4,8 @@
 #include "gtk/gtk.h"
 
 gboolean juniper_prefs_init();
-gchar * juniper_prefs_get_homepage();
-gboolean juniper_prefs_get_open_homepage_on_new_tab();
+
+gpointer juniper_prefs_get(const gchar * key);
+void juniper_prefs_set(const gchar * key, const gpointer value);
 
 #endif

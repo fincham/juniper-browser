@@ -170,7 +170,7 @@
     <property name="gravity">GDK_GRAVITY_NORTH_EAST</property>
     <property name="has_separator">False</property>
     <property name="name">Juniper</property>
-    <property name="copyright" translatable="yes">Copyright © 2007 Jasper Bryant-Greene. All rights reserved.</property>
+    <property name="copyright" translatable="yes">Copyright © 2008 Jasper Bryant-Greene. All rights reserved.</property>
     <property name="website">http://www.juniper.org.nz/</property>
     <property name="license" translatable="yes">Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
