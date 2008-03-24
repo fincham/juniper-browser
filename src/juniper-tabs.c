@@ -13,9 +13,11 @@
 static GtkNotebook * tabs;
 static gboolean first_tab_added = TRUE;
 
-void juniper_tabs_init(GtkNotebook * i_tabs)
+gboolean juniper_tabs_init(GladeXML * xml)
 {
-    tabs = i_tabs;
+    tabs = GTK_NOTEBOOK(glade_xml_get_widget(xml, "tabs"));
+
+    return TRUE;
 }
 
 GtkNotebook * juniper_tabs()

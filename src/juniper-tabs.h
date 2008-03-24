@@ -1,10 +1,11 @@
 #ifndef JUNIPER_TABS
 #define JUNIPER_TABS
 
+#include "glade/glade.h"
 #include "gtk/gtk.h"
 #include "webkit/webkitwebview.h"
 
-void juniper_tabs_init(GtkNotebook *);
+gboolean juniper_tabs_init(GladeXML *);
 void juniper_tabs_cleanup();
 
 GtkNotebook * juniper_tabs();

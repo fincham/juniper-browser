@@ -1,9 +1,10 @@
 #ifndef JUNIPER_UI
 #define JUNIPER_UI
 
+#include "glade/glade.h"
 #include "gtk/gtk.h"
 
-void juniper_ui_init(GtkWindow *, GtkStatusbar *, GtkDialog *);
+gboolean juniper_ui_init(GladeXML *);
 GtkWindow * juniper_ui_get_window();
 void juniper_ui_set_window_title(const gchar * title);
 gboolean juniper_ui_show_message_box(GtkMessageType type, GtkButtonsType buttons, const gchar *title, const gchar *message);
