@@ -9,11 +9,6 @@
 
 #define PREFS_FILE "preferences.xml"
 
-#define PREF_HOMEPAGE_KEY                 "homepage"
-#define PREF_OPEN_HOMEPAGE_ON_NEW_TAB_KEY "open_homepage_on_new_tab"
-
-#define PREF_HOMEPAGE_MAX_LEN 1024
-
 static GHashTable * prefs_table = NULL;
 
 gboolean juniper_prefs_init()
