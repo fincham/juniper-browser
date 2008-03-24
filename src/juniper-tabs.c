@@ -136,7 +136,12 @@ void juniper_tabs_navigate_to(GtkVBox * tab, const gchar * location)
     assert(tab != NULL);
 
     if (location == NULL)
+    {
+#ifdef DEBUG
+        puts("Can't navigate to NULL!");
+#endif
         return;
+    }
 
     gtk_label_set_text(GTK_LABEL(gtk_notebook_get_tab_label(tabs, GTK_WIDGET(tab))), "loading...");
     webkit_web_view_open(juniper_tabs_page_for_tab(tab), location);
@@ -177,7 +182,9 @@ void juniper_tabs_add_with_location(const gchar * location)
     gtk_notebook_set_current_page(tabs, gtk_notebook_append_page(tabs, GTK_WIDGET(vbox), GTK_WIDGET(label)));
 
     /* connect signal handlers */
+#ifndef NO_WEBKIT_NAVIGATION_ACTION
     g_signal_connect(page, "navigation-requested", G_CALLBACK(juniper_events_navigation_requested), vbox);
+#endif
     g_signal_connect(page, "load-committed", G_CALLBACK(juniper_events_page_load_started), vbox);
     g_signal_connect(page, "title-changed", G_CALLBACK(juniper_events_page_title_changed), vbox);
     g_signal_connect(page, "hovering-over-link", G_CALLBACK(juniper_events_page_link_hover), NULL);

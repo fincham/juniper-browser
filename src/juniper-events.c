@@ -5,7 +5,10 @@
 
 #include "gdk/gdkkeysyms.h"
 #include "webkit/webkitwebframe.h"
+
+#ifndef NO_WEBKIT_NAVIGATION_ACTION
 #include "webkit/webkitnavigationaction.h"
+#endif
 
 #include "juniper-prefs.h"
 #include "juniper-tabs.h"
@@ -46,17 +49,19 @@ void juniper_events_current_tab_changed(GtkNotebook * tabs, GtkNotebookPage * no
     juniper_ui_set_window_title(juniper_tabs_get_title(juniper_tabs_nth(page_num)));
 }
 
+#ifndef NO_WEBKIT_NAVIGATION_ACTION
 WebKitNavigationResponse juniper_events_navigation_requested(WebKitWebView * page, WebKitNavigationAction * action, WebKitWebFrame * frame, WebKitNetworkRequest * request, GtkVBox * tab)
 {
-    gint button, modifier_flags;
+    gint button, modifier_flags, navigation_type;
     const gchar * url;
 
     button = webkit_navigation_action_get_button(action);
+    navigation_type = webkit_navigation_action_get_navigation_type(action);
     modifier_flags = webkit_navigation_action_get_modifier_flags(action);
     url = webkit_navigation_action_get_original_url(action);
 
 #ifdef DEBUG
-    printf("navigation requested: button=%i, modifier_flags=%i, url=%s\n", button, modifier_flags, url);
+    printf("navigation requested: button=%i, navigation_type=%i, modifier_flags=%i, url=%s\n", button, navigation_type, modifier_flags, url);
 #endif
 
     if (button == 1 || (button == 0 && (modifier_flags & GDK_CONTROL_MASK))) /* middle click or ctrl-click */
@@ -69,6 +74,7 @@ WebKitNavigationResponse juniper_events_navigation_requested(WebKitWebView * pag
 
     return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 }
+#endif
 
 void juniper_events_page_load_started(WebKitWebView * page, WebKitWebFrame * frame, GtkVBox * tab)
 {

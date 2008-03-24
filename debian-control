@@ -1,0 +1,5 @@
+Package: juniper
+Version: 0.REVISION
+Architecture: ARCH
+Maintainer: Jasper Bryant-Greene <jasper@unix.geek.nz>
+Description: A lightweight GTK+ browser using the WebKit rendering engine.
