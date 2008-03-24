@@ -35,6 +35,12 @@ gchar * juniper_util_normalise_url(const gchar * url)
             return NULL;
         }
 
+        if (strstr(url, " ") != NULL)
+        {
+            /* user is probably wanting to search for something. hardcoded google for now, sorry! */
+            return juniper_util_sprintf("http://www.google.co.nz/search?q=%s&ie=utf-8&oe=utf-8&client=juniper", url);
+        }
+
         return juniper_util_sprintf("http://%s", url);
     }
     else

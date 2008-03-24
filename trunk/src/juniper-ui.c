@@ -9,12 +9,18 @@ static GtkStatusbar * status_bar;
 static guint status_bar_context_id;
 static GtkDialog * about_dialog;
 
-void juniper_ui_init(GtkWindow * i_window, GtkStatusbar * i_status_bar, GtkDialog * i_about_dialog)
+gboolean juniper_ui_init(GladeXML * xml)
 {
-    window = i_window;
-    status_bar = i_status_bar;
+    window = GTK_WINDOW(glade_xml_get_widget(xml, "main_window"));
+
+    status_bar = GTK_STATUSBAR(glade_xml_get_widget(xml, "status_bar"));
     status_bar_context_id = gtk_statusbar_get_context_id(status_bar, "juniper");
-    about_dialog = i_about_dialog;
+
+    about_dialog = GTK_DIALOG(glade_xml_get_widget(xml, "about_dialog"));
+
+    gtk_widget_show_all(GTK_WIDGET(window));
+
+    return TRUE;
 }
 
 GtkWindow * juniper_ui_get_window()
