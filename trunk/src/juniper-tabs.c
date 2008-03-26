@@ -193,11 +193,13 @@ void juniper_tabs_add_with_location(const gchar * location)
     g_signal_connect(page, "navigation-requested", G_CALLBACK(juniper_events_navigation_requested), vbox);
 #endif
     g_signal_connect(page, "load-committed", G_CALLBACK(juniper_events_page_load_started), vbox);
+    g_signal_connect(page, "load-finished", G_CALLBACK(juniper_events_page_load_finished), vbox);
     g_signal_connect(page, "title-changed", G_CALLBACK(juniper_events_page_title_changed), vbox);
     g_signal_connect(page, "hovering-over-link", G_CALLBACK(juniper_events_page_link_hover), NULL);
     g_signal_connect(page, "key-press-event", G_CALLBACK(juniper_events_tab_key_press), vbox);
     g_signal_connect(address_bar, "activate", G_CALLBACK(juniper_events_address_bar_activate), NULL);
     g_signal_connect(address_bar, "key-press-event", G_CALLBACK(juniper_events_tab_key_press), vbox);
+    g_signal_connect(address_bar, "changed", G_CALLBACK(juniper_events_address_bar_changed), NULL);
 
     if (first_tab_added)
     {

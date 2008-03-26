@@ -10,6 +10,7 @@
 #include "webkit/webkitnavigationaction.h"
 #endif
 
+#include "juniper-history.h"
 #include "juniper-prefs.h"
 #include "juniper-tabs.h"
 #include "juniper-ui.h"
@@ -21,14 +22,28 @@
  */
 void juniper_events_address_bar_activate(GtkEntry * address_bar)
 {
-    const gchar * url;
+    const gchar * uri;
 
-    url = gtk_entry_get_text(address_bar);
+    uri = gtk_entry_get_text(address_bar);
 
-    if (!url || strlen(url) == 0)
+    if (!uri || strlen(uri) == 0)
         return;
 
-    juniper_tabs_navigate_to(juniper_tabs_current(), juniper_util_normalise_url(url));
+    juniper_tabs_navigate_to(juniper_tabs_current(), juniper_util_normalise_url(uri));
+}
+
+void juniper_events_address_bar_changed(GtkEntry * address_bar)
+{
+    GSList * match;
+    const char * text;
+
+    text = gtk_entry_get_text(address_bar);
+
+    if (text == NULL || strlen(text) == 0)
+        return;
+
+    match = juniper_history_matches(text);
+    /* got data, now wtf do we do with it? */
 }
 
 /**
@@ -89,6 +104,15 @@ void juniper_events_page_load_started(WebKitWebView * page, WebKitWebFrame * fra
 #endif
 
     gtk_entry_set_text(address_bar, uri);
+    juniper_history_add(uri, juniper_tabs_get_title(tab));
+}
+
+void juniper_events_page_load_finished(WebKitWebView * page, WebKitWebFrame * frame, GtkVBox * tab)
+{
+    GtkEntry * address_bar;
+
+    address_bar = juniper_tabs_address_bar_for_tab(tab);
+    juniper_history_add(gtk_entry_get_text(address_bar), juniper_tabs_get_title(tab));
 }
 
 void juniper_events_about_activate(GtkMenuItem * menu_item)

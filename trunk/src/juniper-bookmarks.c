@@ -5,7 +5,6 @@
 #include "sqlite3.h"
 
 #include "juniper-db.h"
-#include "juniper-fs.h"
 #include "juniper-tabs.h"
 
 static GladeXML * glade;

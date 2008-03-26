@@ -5,6 +5,7 @@
 
 #include "juniper-db.h"
 #include "juniper-events.h"
+#include "juniper-history.h"
 #include "juniper-tabs.h"
 #include "juniper-view-source.h"
 #include "juniper-prefs.h"
@@ -29,7 +30,7 @@ int main(int argc, char **argv)
     xml = glade_xml_new("/usr/share/juniper/juniper.glade", NULL, NULL);
     glade_xml_signal_autoconnect(xml);
 
-    if (!(juniper_db_init() && juniper_prefs_init() && juniper_bookmarks_init(xml) && juniper_ui_init(xml) && juniper_tabs_init(xml)))
+    if (!(juniper_db_init() && juniper_prefs_init() && juniper_history_init() && juniper_bookmarks_init(xml) && juniper_ui_init(xml) && juniper_tabs_init(xml)))
         return 1;
 
     url = (argc == 2) ? argv[1] : juniper_prefs_get("homepage");
