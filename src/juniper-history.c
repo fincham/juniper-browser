@@ -31,7 +31,7 @@ gboolean juniper_history_add(const gchar * uri, const gchar * title)
     printf("adding history item: uri=%s, title=%s\n", uri, title);
 #endif
 
-    sqlite3_prepare_v2(db_handle, "insert into history (uri, title, last_visited) values(?, ?, strftime('%s', 'now'))", -1, &statement, NULL);
+    sqlite3_prepare_v2(db_handle, "insert or replace into history (uri, title, last_visited) values(?, ?, strftime('%s', 'now'))", -1, &statement, NULL);
     sqlite3_bind_text(statement, 1, uri, strlen(uri), SQLITE_STATIC);
     sqlite3_bind_text(statement, 2, title, strlen(title), SQLITE_STATIC);
 
