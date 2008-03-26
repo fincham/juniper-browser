@@ -7,6 +7,9 @@
 #include "juniper-events.h"
 #include "juniper-prefs.h"
 #include "juniper-ui.h"
+#include "juniper-util.h"
+
+#include "webkit/webkitwebframe.h"
 
 #define MAX_TAB_COUNT  100
 
@@ -51,7 +54,7 @@ GtkVBox * juniper_tabs_nth(guint index)
 
 const gchar * juniper_tabs_get_title(GtkVBox * tab)
 {
-    return gtk_label_get_text(GTK_LABEL(gtk_notebook_get_tab_label(tabs, GTK_WIDGET(tab))));
+    return webkit_web_frame_get_title(webkit_web_view_get_main_frame(juniper_tabs_page_for_tab(tab)));
 }
 
 void juniper_tabs_set_title(GtkVBox * tab, const gchar * title)
@@ -59,7 +62,7 @@ void juniper_tabs_set_title(GtkVBox * tab, const gchar * title)
     GtkLabel * label;
 
     label = GTK_LABEL(gtk_notebook_get_tab_label(tabs, GTK_WIDGET(tab)));
-    gtk_label_set_text(label, title);
+    gtk_label_set_text(label, juniper_util_truncate(title, 24));
 
     if (tab == juniper_tabs_current())
     {
@@ -114,6 +117,8 @@ void juniper_tabs_close_current()
 
     /* remove the tab from the notebook */
     gtk_notebook_remove_page(tabs, gtk_notebook_get_current_page(tabs));
+
+    juniper_tabs_count_changed();
 }
 
 void juniper_tabs_next()
@@ -208,6 +213,30 @@ void juniper_tabs_add_with_location(const gchar * location)
     {
         gtk_label_set_text(label, "blank");
     }
+
+    juniper_tabs_count_changed();
+}
+
+void juniper_tabs_count_changed()
+{
+    if (juniper_tabs_count() < 2)
+    {
+        juniper_tabs_hide();
+    }
+    else
+    {
+        juniper_tabs_show();
+    }
+}
+
+void juniper_tabs_hide()
+{
+    gtk_notebook_set_show_tabs(tabs, false);
+}
+
+void juniper_tabs_show()
+{
+    gtk_notebook_set_show_tabs(tabs, true);
 }
 
 void juniper_tabs_add()

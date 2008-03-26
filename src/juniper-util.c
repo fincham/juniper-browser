@@ -6,6 +6,7 @@
 
 #define SPRINTF_MAX_STRLEN 4096
 #define MAX_URL_LENGTH 4000
+#define TRUNCATE_APPEND "…"
 
 gchar * juniper_util_sprintf(const gchar * format_str, ...)
 {
@@ -45,4 +46,33 @@ gchar * juniper_util_normalise_url(const gchar * url)
     }
     else
         return g_strdup(url);
+}
+
+gchar * juniper_util_truncate(const gchar * string, guint max_length)
+{
+    gchar * truncated;
+    int string_length, total_length;
+    gboolean truncate;
+
+    truncate = (strlen(string) > max_length);
+
+    if (truncate)
+    {
+        string_length = max_length + 1;
+        total_length = string_length + strlen(TRUNCATE_APPEND);
+    }
+    else
+    {
+        string_length = strlen(string) + 1;
+        total_length = string_length;
+    }
+
+    truncated = malloc(total_length);
+    strncpy(truncated, string, max_length);
+    truncated[string_length - 1] = '\0';
+
+    if (truncate)
+        strcat(truncated, TRUNCATE_APPEND);
+
+    return truncated;
 }
