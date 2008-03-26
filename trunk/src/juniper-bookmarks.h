@@ -5,8 +5,10 @@
 #include "gtk/gtk.h"
 
 gboolean juniper_bookmarks_init(GladeXML *);
+void juniper_bookmarks_reload();
 void juniper_bookmarks_add_bookmark_menu_item_activate(GtkMenuItem * menu_item);
+void juniper_bookmarks_menu_item_activate(GtkMenuItem * menu_item, const gchar * uri);
 gchar * juniper_bookmarks_get(gchar * title);
-void juniper_bookmarks_add(gchar * title, gchar * url);
+void juniper_bookmarks_add(const gchar * uri, const gchar * name);
 
 #endif

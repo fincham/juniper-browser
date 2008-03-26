@@ -25,4 +25,8 @@ void juniper_tabs_add();
 void juniper_tabs_add_with_location(const gchar *);
 void juniper_tabs_next();
 
+void juniper_tabs_count_changed();
+void juniper_tabs_show();
+void juniper_tabs_hide();
+
 #endif

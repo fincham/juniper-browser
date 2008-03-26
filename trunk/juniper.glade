@@ -300,7 +300,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</property>
                 <property name="label" translatable="yes">gtk-cancel</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
-                <signal name="activate" handler="juniper_bookmarks_cancel_add_bookmark_activate"/>
               </widget>
             </child>
             <child>
@@ -312,7 +311,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</property>
                 <property name="receives_default">True</property>
                 <property name="label" translatable="yes">gtk-add</property>
                 <property name="use_stock">True</property>
-                <property name="response_id">0</property>
+                <property name="response_id">1</property>
               </widget>
               <packing>
                 <property name="position">1</property>

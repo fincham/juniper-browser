@@ -32,7 +32,7 @@ void juniper_ui_set_window_title(const gchar * title)
 {
     gchar * new_title;
 
-    if (strlen(title) < 1)
+    if (NULL == title || strlen(title) < 1)
         new_title = "Juniper";
     else
         new_title = juniper_util_sprintf("%s - Juniper", title);

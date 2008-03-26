@@ -2,55 +2,52 @@
 
 #include "assert.h"
 #include "string.h"
-#include "libxml/parser.h"
-#include "libxml/tree.h"
+#include "sqlite3.h"
 
+#include "juniper-db.h"
 #include "juniper-fs.h"
 
-#define PREFS_FILE "preferences.xml"
-
-static GHashTable * prefs_table = NULL;
+static sqlite3 * db_handle;
 
 gboolean juniper_prefs_init()
 {
-    xmlDoc * doc = NULL;
-    xmlNode * root_element = NULL;
-    xmlNode * prefs_element = NULL;
+    db_handle = juniper_db_get_handle();
+    assert(db_handle != NULL);
 
-    LIBXML_TEST_VERSION
-
-    doc = xmlReadFile(juniper_fs_build_filename(PREFS_FILE), NULL, 0);
-
-    if (doc == NULL)
-    {
-        puts("Error reading preferences file");
-        return FALSE;
-    }
-
-    root_element = xmlDocGetRootElement(doc);
-
-    prefs_table = g_hash_table_new(g_str_hash, g_str_equal);
-
-    for (prefs_element = root_element->children; prefs_element; prefs_element = prefs_element->next)
-    {
-        if (prefs_element->type == XML_ELEMENT_NODE)
-        {
-            g_hash_table_insert(prefs_table, (gchar *) prefs_element->name, prefs_element->content);
-        }
-    }
-
-    xmlFreeDoc(doc);
-    xmlCleanupParser();
-
+    sqlite3_exec(db_handle, "create table preferences (key varchar(255) not null unique, value varchar (255) not null)", NULL, NULL, NULL);
     return TRUE;
 }
 
-gpointer juniper_prefs_get(const gchar * key)
+const gchar * juniper_prefs_get(const gchar * key)
 {
-    return g_hash_table_lookup(prefs_table, key);
+    sqlite3_stmt * statement;
+    gchar * value;
+
+    sqlite3_prepare_v2(db_handle, "select key, value from preferences where key=?", -1, &statement, NULL);
+    sqlite3_bind_text(statement, 1, key, strlen(key), SQLITE_STATIC);
+
+    if (sqlite3_step(statement) != SQLITE_ROW)
+        return NULL;
+
+    value = g_strdup((gchar *) sqlite3_column_text(statement, 1));
+
+    sqlite3_finalize(statement);
+
+    return value;
 }
 
-void juniper_prefs_set(const gchar * key, const gpointer value)
+gboolean juniper_prefs_set(const gchar * key, const gchar * value)
 {
-    g_hash_table_insert(prefs_table, g_strdup(key), value);
+    sqlite3_stmt * statement;
+
+    sqlite3_prepare_v2(db_handle, "insert into preferences (key, value) values(?, ?)", -1, &statement, NULL);
+    sqlite3_bind_text(statement, 1, key, strlen(key), SQLITE_STATIC);
+    sqlite3_bind_text(statement, 2, value, strlen(value), SQLITE_STATIC);
+
+    if (sqlite3_step(statement) != SQLITE_DONE)
+        return FALSE;
+
+    sqlite3_finalize(statement);
+
+    return TRUE;
 }
