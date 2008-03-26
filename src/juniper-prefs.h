@@ -1,7 +1,7 @@
 #ifndef JUNIPER_PREFS
 #define JUNIPER_PREFS
 
-#include "gtk/gtk.h"
+#include "glib.h"
 
 gboolean juniper_prefs_init();
 const gchar * juniper_prefs_get(const gchar * key);

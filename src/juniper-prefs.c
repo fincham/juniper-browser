@@ -5,7 +5,6 @@
 #include "sqlite3.h"
 
 #include "juniper-db.h"
-#include "juniper-fs.h"
 
 static sqlite3 * db_handle;
 
