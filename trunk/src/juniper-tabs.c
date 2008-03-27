@@ -3,6 +3,7 @@
 #include "assert.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
 
 #include "juniper-events.h"
 #include "juniper-prefs.h"
@@ -52,6 +53,16 @@ GtkVBox * juniper_tabs_nth(guint index)
     return GTK_VBOX(gtk_notebook_get_nth_page(tabs, index));
 }
 
+gboolean juniper_tabs_is_blank(GtkVBox * tab)
+{
+    const gchar * title, * uri;
+
+    title = juniper_tabs_get_title(tab);
+    uri = juniper_tabs_get_uri(tab);
+
+    return NULL == title || NULL == uri || (strcmp(title, "blank") == 0 && strlen(uri) == 0);
+}
+
 const gchar * juniper_tabs_get_title(GtkVBox * tab)
 {
     return webkit_web_frame_get_title(webkit_web_view_get_main_frame(juniper_tabs_page_for_tab(tab)));
@@ -68,6 +79,11 @@ void juniper_tabs_set_title(GtkVBox * tab, const gchar * title)
     {
         juniper_ui_set_window_title(title);
     }
+}
+
+const gchar * juniper_tabs_get_uri(GtkVBox * tab)
+{
+    return gtk_entry_get_text(juniper_tabs_address_bar_for_tab(tab));
 }
 
 GtkWidget * juniper_tabs_nth_widget_for_tab(GtkVBox * tab, guint index)

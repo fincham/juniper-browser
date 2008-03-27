@@ -114,7 +114,14 @@ void juniper_bookmarks_add_bookmark_menu_item_activate(GtkMenuItem * menu_item)
 
 void juniper_bookmarks_menu_item_activate(GtkMenuItem * menu_item, const gchar * url)
 {
-    juniper_tabs_add_with_location(url);
+    GtkVBox * tab;
+
+    tab = juniper_tabs_current();
+
+    if (juniper_tabs_is_blank(tab))
+        juniper_tabs_navigate_to(tab, url);
+    else
+        juniper_tabs_add_with_location(url);
 }
 
 void juniper_bookmarks_add(const gchar * uri, const gchar * name)
