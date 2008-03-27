@@ -6,7 +6,7 @@ COMMON="-pipe -Wall -pedantic -Werror $@"
 DEPENDENCIES="libglade-2.0 gtk+-2.0 gtksourceview-1.0 webkit-1.0 sqlite3"
 
 CFLAGS="$COMMON $(pkg-config --cflags $DEPENDENCIES)"
-LDFLAGS="$COMMON -Wl,-E -Wl,--sort-common -Wl,--as-needed -Wl,--no-add-needed -Wl,--enable-new-dtags -Wl,--fatal-warnings"
+LDFLAGS="$COMMON -Wl,-E"
 LIBS="$(pkg-config --libs $DEPENDENCIES)"
 
 echo "CFLAGS: $CFLAGS"

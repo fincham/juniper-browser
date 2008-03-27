@@ -35,15 +35,19 @@ void juniper_events_address_bar_activate(GtkEntry * address_bar)
 void juniper_events_address_bar_changed(GtkEntry * address_bar)
 {
     GSList * match;
-    const char * text;
+    const gchar * text;
+    gint entered_length;
 
     text = gtk_entry_get_text(address_bar);
+    entered_length = strlen(text);
 
-    if (text == NULL || strlen(text) == 0)
+    if (text == NULL || entered_length == 0)
         return;
 
     match = juniper_history_matches(text);
-    /* got data, now wtf do we do with it? */
+
+    if (match == NULL)
+        return;
 }
 
 /**
