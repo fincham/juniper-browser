@@ -3,7 +3,7 @@ set -e
 
 COMMON="-pipe -Wall -pedantic -Werror $@"
 
-DEPENDENCIES="libglade-2.0 gtk+-2.0 gtksourceview-1.0 webkit-1.0 sqlite3"
+DEPENDENCIES="libglade-2.0 gtk+-2.0 webkit-1.0 sqlite3"
 
 CFLAGS="$COMMON $(pkg-config --cflags $DEPENDENCIES)"
 LDFLAGS="$COMMON -Wl,-E"
@@ -28,12 +28,11 @@ gcc $CFLAGS -c juniper-prefs.c -o ../juniper-prefs.o
 gcc $CFLAGS -c juniper-tabs.c -o ../juniper-tabs.o
 gcc $CFLAGS -c juniper-ui.c -o ../juniper-ui.o
 gcc $CFLAGS -c juniper-util.c -o ../juniper-util.o
-gcc $CFLAGS -c juniper-view-source.c -o ../juniper-view-source.o
 
 cd ..
 
 # Build dynamically-linked Juniper executable
-gcc $LDFLAGS -o juniper juniper.o juniper-bookmarks.o juniper-db.o juniper-events.o juniper-extensions.o juniper-fs.o juniper-history.o juniper-prefs.o juniper-tabs.o juniper-ui.o juniper-util.o juniper-view-source.o $LIBS
+gcc $LDFLAGS -o juniper juniper.o juniper-bookmarks.o juniper-db.o juniper-events.o juniper-extensions.o juniper-fs.o juniper-history.o juniper-prefs.o juniper-tabs.o juniper-ui.o juniper-util.o $LIBS
 
 rm -f *.o
 

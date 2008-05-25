@@ -12,7 +12,7 @@ void juniper_events_address_bar_changed(GtkEntry * address_bar);
 void juniper_events_page_title_changed(WebKitWebView * page, WebKitWebFrame * frame, const gchar * page_title, GtkVBox * tab);
 void juniper_events_current_tab_changed(GtkNotebook * tabs, GtkNotebookPage * notebook_page, guint page_num);
 
-#ifndef NO_WEBKIT_NAVIGATION_ACTION
+#ifdef WEBKIT_NAVIGATION_ACTION
 WebKitNavigationResponse juniper_events_navigation_requested(WebKitWebView * page, WebKitNavigationAction * action, WebKitWebFrame * frame, WebKitNetworkRequest * request, GtkVBox * tab);
 #endif
 
