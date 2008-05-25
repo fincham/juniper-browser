@@ -7,7 +7,6 @@
 #include "juniper-events.h"
 #include "juniper-history.h"
 #include "juniper-tabs.h"
-#include "juniper-view-source.h"
 #include "juniper-prefs.h"
 #include "juniper-bookmarks.h"
 #include "juniper-ui.h"

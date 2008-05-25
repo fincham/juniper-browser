@@ -6,7 +6,7 @@
 #include "gdk/gdkkeysyms.h"
 #include "webkit/webkitwebframe.h"
 
-#ifndef NO_WEBKIT_NAVIGATION_ACTION
+#ifdef WEBKIT_NAVIGATION_ACTION
 #include "webkit/webkitnavigationaction.h"
 #endif
 
@@ -68,7 +68,7 @@ void juniper_events_current_tab_changed(GtkNotebook * tabs, GtkNotebookPage * no
     juniper_ui_set_window_title(juniper_tabs_get_title(juniper_tabs_nth(page_num)));
 }
 
-#ifndef NO_WEBKIT_NAVIGATION_ACTION
+#ifdef WEBKIT_NAVIGATION_ACTION
 WebKitNavigationResponse juniper_events_navigation_requested(WebKitWebView * page, WebKitNavigationAction * action, WebKitWebFrame * frame, WebKitNetworkRequest * request, GtkVBox * tab)
 {
     gint button, modifier_flags, navigation_type;
