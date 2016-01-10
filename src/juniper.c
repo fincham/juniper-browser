@@ -1,5 +1,3 @@
-/* CAN HAS STDIO? (sorry, couldn't resist) */
-
 #include "gtk/gtk.h"
 #include "glade/glade.h"
 
